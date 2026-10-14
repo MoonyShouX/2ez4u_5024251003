@@ -33,21 +33,51 @@ class Array:
         self.data[posisi] = pesanan
         self.isi += 1
 
-    def hapus_pesanan(self, indeks):
+    def append(self, pesanan):
+        self.tambah_reguler(pesanan)
 
+    def insert(self, indeks, pesanan):
+        if indeks < 0 or indeks > self.isi:
+            return
+        if self.isi == self.kapasitas:
+            self._tambah_kapasitas()
+        for i in range(self.isi, indeks, -1):
+            self.data[i] = self.data[i - 1]
+        self.data[indeks] = pesanan
+        self.isi += 1
+
+    def get(self, indeks):
+        if indeks < 0 or indeks >= self.isi:
+            return None
+        return self.data[indeks]
+
+    def hapus_pesanan(self, indeks):
         if indeks < 0 or indeks >= self.isi:
             print("Indeks not found")
-            return
+            return None
 
-        for i in range(indeks, self.isi - 1 ):
-            self.data[i] = self.data[i+1]
-        self.data[self.isi - 1 ] = None
+        item_dihapus = self.data[indeks]
+        for i in range(indeks, self.isi - 1):
+            self.data[i] = self.data[i + 1]
+        self.data[self.isi - 1] = None
         self.isi -= 1
-    def lihat_pesanan(self):
+        return item_dihapus
+
+    def lihat_pesanan(self, indeks=None):
+        if indeks is not None:
+            return self.get(indeks)
         hasil = []
         for i in range(self.isi):
             hasil.append(self.data[i])
-        print("Daftar Pesanan Sekarang:", hasil)
         return hasil
+
+    def __len__(self):
+        return self.isi
+
+
+from backend.m1_linked_list import Node, LinkedList
+LinkList = LinkedList
+
+
 
 

@@ -19,6 +19,10 @@ class LinkedList:
         else:
             self.tail.next = gerbong_baru
             self.tail = gerbong_baru
+        self.jumlah += 1
+
+    def append(self, pesanan):
+        self.tambah_reguler(pesanan)
 
     def tambah_vip(self, pesanan):
         gerbong_baru = Node(pesanan)
@@ -27,16 +31,14 @@ class LinkedList:
 
         if self.tail is None:
             self.tail = gerbong_baru
+        self.jumlah += 1
 
     def tambah_prioritas(self, pesanan):
-        total = 0
-        saat_ini = self.head
-        while saat_ini is not None:
-            total += 1
-            saat_ini = saat_ini.next
+        if self.head is None or self.jumlah == 0:
+            self.tambah_vip(pesanan)
+            return
 
-        tengah = total // 2
-
+        tengah = self.jumlah // 2
         if tengah == 0:
             self.tambah_vip(pesanan)
             return
@@ -49,40 +51,52 @@ class LinkedList:
         gerbong_baru.next = sebelum.next
         sebelum.next = gerbong_baru
 
+        if gerbong_baru.next is None:
+            self.tail = gerbong_baru
+        self.jumlah += 1
+
     def hapus_pesanan(self, posisi):
-        if self.head is None:
-            print("Antrean masih kosong!")
-            return
+        if self.head is None or posisi < 0 or posisi >= self.jumlah:
+            print("Posisi tidak ditemukan!")
+            return None
 
         if posisi == 0:
+            data_keluar = self.head.data
             self.head = self.head.next
             if self.head is None:
                 self.tail = None
-            return
+            self.jumlah -= 1
+            return data_keluar
 
         sebelum = self.head
         for i in range(posisi - 1):
-            if sebelum.next is None:
-                print("Posisi tidak ditemukan!")
-                return
             sebelum = sebelum.next
 
-        if sebelum.next is None:
-            print("Posisi tidak ditemukan!")
-            return
-
+        data_keluar = sebelum.next.data
         if sebelum.next == self.tail:
             self.tail = sebelum
 
         sebelum.next = sebelum.next.next
+        self.jumlah -= 1
+        return data_keluar
 
-    def lihat_pesanan(self):
+    def get(self, posisi):
+        if posisi < 0 or posisi >= self.jumlah:
+            return None
+        saat_ini = self.head
+        for i in range(posisi):
+            saat_ini = saat_ini.next
+        return saat_ini.data
+
+    def lihat_pesanan(self, posisi=None):
+        if posisi is not None:
+            return self.get(posisi)
         hasil = []
         saat_ini = self.head
-
         while saat_ini is not None:
             hasil.append(saat_ini.data)
             saat_ini = saat_ini.next
-
-        print("Daftar Pesanan Saat Ini:", hasil)
         return hasil
+
+    def __len__(self):
+        return self.jumlah
